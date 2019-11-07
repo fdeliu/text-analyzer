@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Text Analyzer</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <style type="text/css">
+     .navbar{
+      background-color: #2F2FA2
+     }
+     .navbar-brand{
+      font-family: 'Open Sans', sans-serif;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+     }
+     .container{
+      padding: 5%;
+     }
+     .info{
+      color: #2F2FA2;
+      font-weight: bold;
+      font-size: 22px;
+     }
+     #exampleFormControlTextarea1{
+      border: 5px solid #003066;
+     }
+     @media(max-width: 468px){
+      .info{
+        font-size: 15px;
+      }
+     }
+     .form-wrap{
+        background-color: lightgrey;
+     }
+     .btn{
+      border: 1px solid blue;
+      background-color: white;
+      color: black;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: bold;
+     }
+     #reset{
+      padding-left: 20px;
+      padding-right: 20px;
+     }
+</style>
+</head>
+<body>
+<div id="root">
+</div>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+class WordCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: "",
+      numOfWords: 0,
+      repeatedWords: {}
+    };
+    this.baseState = this.state;
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.resetState = this.resetState.bind(this);
+  }
+  handleChange(e) {
+    let text = e.target.value;
+    this.setState({ value: text });
+  }
+  handleClick() {
+    let input = this.state.value;
+    let numTotal = input.trim().split(/\s+/).length;
+    let counts = {};
+    input
+      .trim()
+      .split(/\s+/)
+      .forEach(function(x) {
+        counts[x] = (counts[x] || 0) + 1;
+      });
+    this.setState({ repeatedWords: counts });
+    this.setState({ numOfWords: numTotal });
+  }
+  resetState() {
+    this.setState(this.baseState);
+  }
+  render() {
+    const ob = this.state.repeatedWords;
+    return (
+      <div>
+        <nav class="navbar">
+          <p class="navbar-brand mx-auto my-auto">
+            Text Analyzer <i class="fas fa-file-alt fa-spin"></i>
+          </p>
+        </nav>
+        <div class="form-wrap">
+          <div class="container">
+            <p class="text-center info">
+              This small application helps you find the total number of words
+              and their frequency
+            </p>
+            <br />
+            <form>
+              <div class="form-group">
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="10"
+                  onChange={this.handleChange}
+                  required="required"
+                  placeholder="Write text here...."
+                ></textarea>
+              </div>
+              <br />
+              <button
+                type="button"
+                class="btn btn-primary"
+                disabled={this.state.value == "" ? true : false}
+                onClick={this.handleClick}
+              >
+                Analyze Text
+              </button>
+              <button
+                type="reset"
+                class="btn btn-danger"
+                id="reset"
+                onClick={this.resetState}
+              >
+                Reset
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="container">
+          <p class="info">
+            Total Words: {this.state.value == "" ? 0 : this.state.numOfWords}
+          </p>
+          <table class="table table-md table-secondary">
+            <thead>
+              <tr>
+                <th scope="col-sm-6">Word:</th>
+                <th scope="col-sm-6">Frequency</th>
+              </tr>
+            </thead>
+            {this.state.value ? (
+              <tbody>
+                {Object.keys(ob).map((value, index) => {
+                  return (
+                    <tr>
+                      <td>{value}</td>
+                      <td>{ob[value]}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            ) : null}
+          </table>
+        </div>
+        <div>
+          <footer className="container">
+            <p
+              className="text-center"
+              style={{ color: "blue", fontWeight: "bold" }}
+            >
+              &copy; 2019 Flamur Deliu
+            </p>
+          </footer>
+        </div>
+      </div>
+    );
+  }
+}
+ReactDOM.render(<WordCounter />, document.getElementById("root"));
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+</body>
+</html>
